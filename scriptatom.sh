@@ -258,6 +258,13 @@ HTML
 
 echo "Step 3: ensure requirements.txt contains flask and requests"
 touch "$REQ_FILE"
+
+# ✅ مطمئن شو آخر فایل خط خالی (newline) داره تا پکیج‌ها نچسبن به هم
+sed -i -e '$a\' "$REQ_FILE"
+
+# ✅ اضافه کردن امن پکیج‌ها در صورت نبود
+grep -qi "^flask" "$REQ_FILE" 2>/dev/null || echo "Flask==3.0.3" >> "$REQ_FILE"
+grep -qi "^requests" "$REQ_FILE" 2>/dev/null || echo "requests" >> "$REQ_FILE"
 # Make sure requirements file ends with newline to avoid merge errors
 sed -i -e '$a\' "$REQ_FILE"
 
@@ -297,3 +304,5 @@ $COMPOSE_CMD up -d web
 
 echo "Done. Web UI should be available at http://<server-ip>:8080 (or on the server: http://127.0.0.1:8080)."
 echo "If container fails, check logs: sudo $COMPOSE_CMD logs -f web"
+
+fix: prevent python-jose==3.3.0requests error by adding newline

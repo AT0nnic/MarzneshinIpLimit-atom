@@ -258,7 +258,11 @@ HTML
 
 echo "Step 3: ensure requirements.txt contains flask and requests"
 touch "$REQ_FILE"
-grep -qi "^flask" "$REQ_FILE" 2>/dev/null || echo "flask" >> "$REQ_FILE"
+# Make sure requirements file ends with newline to avoid merge errors
+sed -i -e '$a\' "$REQ_FILE"
+
+# safely add dependencies if missing
+grep -qi "^flask" "$REQ_FILE" 2>/dev/null || echo "Flask==3.0.3" >> "$REQ_FILE"
 grep -qi "^requests" "$REQ_FILE" 2>/dev/null || echo "requests" >> "$REQ_FILE"
 
 echo "Step 4: create docker-compose override file (docker-compose.web.yml)"

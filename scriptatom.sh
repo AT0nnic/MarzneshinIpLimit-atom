@@ -304,5 +304,3 @@ $COMPOSE_CMD up -d web
 
 echo "Done. Web UI should be available at http://<server-ip>:8080 (or on the server: http://127.0.0.1:8080)."
 echo "If container fails, check logs: sudo $COMPOSE_CMD logs -f web"
-
-fix: prevent python-jose==3.3.0requests error by adding newline

@@ -1,15 +1,27 @@
+version: "3.8"
+
 services:
-  marzneshin_ip_limit:
+  marzneshiniplimit:
     image: ghcr.io/muttehitler/marzneshiniplimit:latest
-    restart: always
-    environment:
-      PORT: 6284
-    network_mode: host
+    container_name: marzneshiniplimit
     volumes:
-      - /opt/marzneshiniplimit/config.json:/marzneshiniplimitcode/config.json
-      - /opt/marzneshiniplimit/app.log:/marzneshiniplimitcode/app.log
-    healthcheck:
-      test: ["CMD", "python", "/marzneshiniplimitcode/health_check.py"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - ./config.json:/app/config.json
+      - ./app.log:/app/app.log
+    ports:
+      - "6284:6284"
+    restart: always
+
+  marzneshin_web:
+    image: ghcr.io/at0nnic/marzneshiniplimit-web:latest
+    container_name: marzneshin_web
+    ports:
+      - "8080:8080"
+    environment:
+      - API_URL=http://172.17.0.1:6284/clients
+    depends_on:
+      - marzneshiniplimit
+    restart: always
+
+networks:
+  default:
+    driver: bridge
